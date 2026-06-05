@@ -3,7 +3,7 @@
 [![benchmark](https://github.com/objectionary/sabj25/actions/workflows/benchmark.yml/badge.svg)](https://github.com/objectionary/sabj25/actions/workflows/benchmark.yml)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/sabj25/blob/master/LICENSE.txt)
 
-This repository contains a set of benchmarks for Stream API in Java 25.
+This repository contains a set of benchmarks for [Stream API] in Java 25.
 
 The motivation of this repository is the lack of benchmarks that would
   cover the entire set of terminal and non-terminal methods of
@@ -60,3 +60,4 @@ on Linux with 4 CPUs.
 [rosales2023]: https://arxiv.org/abs/2302.10006
 [softwaremill]: https://softwaremill.com/benchmarking-java-streams/
 [benchmark-gha]: https://github.com/objectionary/sabj25/actions/runs/27022201502
+[Stream API]: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
