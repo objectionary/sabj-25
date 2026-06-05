@@ -18,8 +18,8 @@ import org.openjdk.jmh.infra.Blackhole;
 
 /**
  * Benchmarks of long stream pipelines over an array of one million numbers:
- * one of only lightweight conversions, one of every stateless operation, and
- * one of the stateful operations that must remember state.
+ * one of only scalar, one-to-one conversions, one of every stateless
+ * operation, and one of the stateful operations that must remember state.
  *
  * @since 0.0.1
  */
@@ -34,7 +34,7 @@ public class Main {
     private final long[] numbers = LongStream.rangeClosed(1, 1_000_000).toArray();
 
     @Benchmark
-    public long lightweight(final Blackhole blackhole) {
+    public long scalar(final Blackhole blackhole) {
         return this.verified(
             Arrays.stream(this.numbers)
                 .filter(number -> number % 2L == 0L)
