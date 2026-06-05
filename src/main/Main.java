@@ -19,7 +19,8 @@ import org.openjdk.jmh.infra.Blackhole;
 /**
  * Benchmarks of long stream pipelines over an array of one million numbers:
  * one of only scalar, one-to-one conversions, one of every stateless
- * operation, and one of the stateful operations that must remember state.
+ * operation, one of the stateful operations that must remember state, and
+ * one of just the classic map and filter operations.
  *
  * @since 0.0.1
  */
@@ -100,6 +101,27 @@ public class Main {
                 .takeWhile(number -> number < 700_000L)
                 .sum(),
             243_749_675_000L
+        );
+    }
+
+    @Benchmark
+    public long classic() {
+        return this.verified(
+            Arrays.stream(this.numbers)
+                .filter(number -> number % 2L == 0L)
+                .map(number -> number + 3L)
+                .filter(number -> number % 5L != 0L)
+                .map(number -> number * 2L)
+                .filter(number -> number > 100L)
+                .map(number -> number - 7L)
+                .filter(number -> number % 3L != 0L)
+                .map(number -> number + 11L)
+                .filter(number -> number < 1_900_000L)
+                .map(number -> number / 2L)
+                .filter(number -> number % 7L != 0L)
+                .map(number -> number + 1L)
+                .sum(),
+            103_142_829_694L
         );
     }
 
