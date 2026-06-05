@@ -10,13 +10,13 @@ if [ ! -s "${csv}" ]; then
     exit 1
 fi
 table=$(
-    echo '| Benchmark | Mode | Threads | Samples | Score | Error | Unit |'
-    echo '| --- | :---: | ---: | ---: | ---: | ---: | :---: |'
+    echo '| Benchmark | Mode | Threads | Samples | Score (ms/op) | Error |'
+    echo '| --- | :---: | ---: | ---: | ---: | ---: |'
     tail -n +2 "${csv}" | tr -d '"' | while IFS=',' \
-        read -r name mode threads samples score error unit; do
-        printf '| %s | %s | %s | %s | %.3f | ± %.3f | %s |\n' \
+        read -r name mode threads samples score error _; do
+        printf '| %s | %s | %s | %s | %.3f | ± %.3f |\n' \
             "${name}" "${mode}" "${threads}" "${samples}" \
-            "${score}" "${error}" "${unit}"
+            "${score}" "${error}"
     done
 )
 sum=$(
