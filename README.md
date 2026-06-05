@@ -41,7 +41,7 @@ The benchmarks run on every push to `master`, and the table below
 
 | Benchmark | Mode | Threads | Samples | Score (ms/op) | Error |
 | --- | :---: | ---: | ---: | ---: | ---: |
-| sabj25.Main.classic | avgt | 1 | 5 | 15.711 | ± 0.217 |
+| sabj25.Main.megamorphic | avgt | 1 | 5 | 15.711 | ± 0.217 |
 | sabj25.Main.scalar | avgt | 1 | 5 | 24.761 | ± 0.264 |
 | sabj25.Main.stateful | avgt | 1 | 5 | 13.580 | ± 0.198 |
 | sabj25.Main.stateless | avgt | 1 | 5 | 15.679 | ± 0.471 |
