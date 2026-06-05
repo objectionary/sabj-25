@@ -15,6 +15,7 @@ The benchmarks of [Biboudis et al.][biboudis2014] ([sources][cotl])
   dedicated stream profiler for the JVM, yet they target the runtime
   overhead of `map()`, `filter()`, and `reduce()` rather than the
   breadth of the API.
+
 A few open-source projects on GitHub benchmark streams as well,
   yet each of them stays narrow:
   [keaz/java-stream-benchmark][keaz] measures only `sort()` and
