@@ -41,13 +41,13 @@ The benchmarks run on every push to `master`, and the table below
 
 | Benchmark | Mode | Threads | Samples | Score (ms/op) | Error |
 | --- | :---: | ---: | ---: | ---: | ---: |
-| sabj25.Main.megamorphic | avgt | 1 | 5 | 15.711 | ± 0.217 |
-| sabj25.Main.scalar | avgt | 1 | 5 | 24.761 | ± 0.264 |
-| sabj25.Main.stateful | avgt | 1 | 5 | 13.580 | ± 0.198 |
-| sabj25.Main.stateless | avgt | 1 | 5 | 15.679 | ± 0.471 |
+| sabj25.Main.megamorphic | avgt | 1 | 5 | 15.755 | ± 0.156 |
+| sabj25.Main.scalar | avgt | 1 | 5 | 25.043 | ± 0.343 |
+| sabj25.Main.stateful | avgt | 1 | 5 | 13.559 | ± 0.292 |
+| sabj25.Main.stateless | avgt | 1 | 5 | 15.783 | ± 0.375 |
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2026-06-05 at 15:05,
+on 2026-06-05 at 18:10,
 on Linux with 4 CPUs.
 <!-- benchmark_end -->
 
@@ -61,5 +61,5 @@ on Linux with 4 CPUs.
 [mapmulti]: https://github.com/Nikolas-Charalambidis/java-16-mapmulti-benchmark
 [rosales2023]: https://arxiv.org/abs/2302.10006
 [softwaremill]: https://softwaremill.com/benchmarking-java-streams/
-[benchmark-gha]: https://github.com/objectionary/sabj25/actions/runs/27022201502
+[benchmark-gha]: https://github.com/objectionary/sabj25/actions/runs/27031932823
 [Stream API]: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
