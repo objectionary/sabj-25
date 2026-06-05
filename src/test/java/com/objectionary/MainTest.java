@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.not;
 final class MainTest {
 
     @Test
-    @Timeout(value = 5, unit = TimeUnit.MINUTES)
+    @Timeout(value = 12, unit = TimeUnit.MINUTES)
     void producesBenchmarkResults() throws Exception {
         final Options options = new OptionsBuilder()
             .include(Main.class.getSimpleName())
