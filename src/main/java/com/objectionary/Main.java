@@ -17,8 +17,8 @@ import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
 
 /**
- * Benchmarks of long stream pipelines over an array of one million numbers,
- * starting with a pipeline of only lightweight, stateless operations.
+ * Benchmarks of long stream pipelines over an array of one million numbers:
+ * one of only lightweight conversions, and one of every stateless operation.
  *
  * @since 0.0.1
  */
@@ -40,7 +40,8 @@ public class Main {
                 .map(number -> number + 1L)
                 .peek(blackhole::consume)
                 .mapToDouble(number -> (double) number)
-                .mapToLong(value -> (long) value)
+                .mapToObj(Double::valueOf)
+                .mapToLong(Double::longValue)
                 .asDoubleStream()
                 .mapToInt(value -> (int) value)
                 .asLongStream()
@@ -48,6 +49,29 @@ public class Main {
                 .mapToLong(Long::longValue)
                 .sum(),
             250_001_000_000L
+        );
+    }
+
+    @Benchmark
+    public long stateless(final Blackhole blackhole) {
+        return this.verified(
+            Arrays.stream(this.numbers)
+                .filter(number -> number % 2L == 0L)
+                .map(number -> number + 1L)
+                .peek(blackhole::consume)
+                .mapToDouble(number -> (double) number)
+                .map(value -> value * 2.0)
+                .mapToLong(value -> (long) value)
+                .flatMap(LongStream::of)
+                .mapMulti((number, sink) -> sink.accept(number))
+                .boxed()
+                .mapToLong(Long::longValue)
+                .asDoubleStream()
+                .mapToObj(Double::valueOf)
+                .mapToInt(Double::intValue)
+                .asLongStream()
+                .sum(),
+            500_002_000_000L
         );
     }
 
