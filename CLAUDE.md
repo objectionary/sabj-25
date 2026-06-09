@@ -15,7 +15,7 @@ Non-standard Maven dirs: `src/main` and `src/test`.
 
 ## Benchmarks
 
-One class `Main`, twenty-eight `@Benchmark` methods.
+One class `Main`, thirty-three `@Benchmark` methods.
 Most run a `long` pipeline over 1,000,000 numbers.
 `scalar`: only one-to-one scalar conversions.
 `stateless`: one of every stateless operation.
@@ -39,6 +39,11 @@ Most run a `long` pipeline over 1,000,000 numbers.
 `text`: `chars`, `codePoints`, `splitAsStream`, matches, and lines.
 `traverse`: manual `iterator`, `spliterator`, and one-arg `reduce`.
 `random`: seeded pseudorandom `ints`, `longs`, and `doubles`.
+`ints`: an `int[]` source kept primitive through `IntStream` and its summary.
+`reals`: a `double[]` source through `DoubleStream`, averaging and summing.
+`ordered`: parallel order-sensitive slicing and short-circuiting terminals.
+`nested`: collectors nested in collectors, through tree and linked maps.
+`comparators`: composed comparators, `thenComparing`, and `joining`.
 Every method ends with `verified(sum, expected)`.
 `verified` throws if the sum drifts from its constant.
 Those constants guard against silent pipeline bugs.
