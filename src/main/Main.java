@@ -2,11 +2,13 @@
 // SPDX-License-Identifier: MIT
 package sabj25;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -36,12 +38,18 @@ import org.openjdk.jmh.infra.Blackhole;
  * the Java 25 gatherers, one of the numeric reduction terminals gathered into a
  * single summary, one of the short-circuiting terminals, one that collects an
  * object stream through composed collectors, one of the general reduction
- * terminals reduce and mutable collect, one sourced from generators and
+ * terminals reduce and mutable collect, one that drives the same three-arg
+ * combiners across the fork-join pool, one sourced from generators and
  * concatenation rather than an array, one over a reference stream of records
  * sorted by comparator and folded through map and joining collectors, one that
  * expands every element through fan-out flat-maps, one of the materializing and
- * traversing terminals, and one that runs stateful operations and concurrent
- * collectors across the fork-join pool.
+ * traversing terminals, one that runs stateful operations and concurrent
+ * collectors across the fork-join pool, one sourced from a list and a set
+ * rather than an array, one that relaxes encounter order so the parallel
+ * pipeline may skip ordering, one that harvests the collectors the others leave
+ * untouched, one that expands elements through the primitive map-multi variants,
+ * and one that measures the fixed overhead of a pipeline over only a handful of
+ * elements.
  *
  * @since 0.0.1
  */
@@ -49,11 +57,15 @@ import org.openjdk.jmh.infra.Blackhole;
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 3, time = 1)
-@Measurement(iterations = 5, time = 1)
-@Fork(1)
+@Measurement(iterations = 5, time = 2)
+@Fork(2)
 public class Main {
 
     private final long[] numbers = LongStream.rangeClosed(1, 1_000_000).toArray();
+
+    private final List<Long> list = Arrays.stream(this.numbers).boxed().toList();
+
+    private final Set<Long> set = Set.copyOf(this.list);
 
     @Benchmark
     public long scalar(final Blackhole blackhole) {
@@ -262,6 +274,19 @@ public class Main {
     }
 
     @Benchmark
+    public long combine(final Blackhole blackhole) {
+        final long reduced = Arrays.stream(this.numbers)
+            .parallel()
+            .boxed()
+            .peek(blackhole::consume)
+            .reduce(0L, (total, number) -> total + number - 1L, Long::sum);
+        final long collected = Arrays.stream(this.numbers)
+            .parallel()
+            .collect(() -> new long[1], (box, number) -> box[0] += number + 3L, (left, right) -> left[0] += right[0])[0];
+        return this.verified(reduced + collected, 1_000_003_000_000L);
+    }
+
+    @Benchmark
     public long generated(final Blackhole blackhole) {
         final long iterated = LongStream.iterate(1L, number -> number <= 500_000L, number -> number + 1L)
             .map(number -> number + 1L)
@@ -403,6 +428,138 @@ public class Main {
                 + grouped.values().stream().mapToLong(Long::longValue).sum()
                 + partitioned.values().stream().mapToLong(Long::longValue).sum(),
             1_005_001_050_000L
+        );
+    }
+
+    @Benchmark
+    public long collection() {
+        final long sequential = this.list.stream()
+            .mapToLong(Long::longValue)
+            .filter(number -> number % 2L == 0L)
+            .map(number -> number + 1L)
+            .sum();
+        final long parallel = this.list.parallelStream()
+            .mapToLong(Long::longValue)
+            .map(number -> number * 2L)
+            .sum();
+        final long hashed = this.set.stream()
+            .mapToLong(Long::longValue)
+            .filter(number -> number % 3L == 0L)
+            .sum();
+        return this.verified(sequential + parallel + hashed, 1_416_668_833_333L);
+    }
+
+    @Benchmark
+    public long unordered() {
+        final long distinct = this.list.parallelStream()
+            .unordered()
+            .map(number -> number % 200_000L)
+            .distinct()
+            .mapToLong(Long::longValue)
+            .sum();
+        final long ordered = this.list.parallelStream()
+            .sequential()
+            .mapToLong(Long::longValue)
+            .filter(number -> number % 4L == 0L)
+            .map(number -> number - 1L)
+            .sum();
+        return this.verified(distinct + ordered, 145_000_150_000L);
+    }
+
+    @Benchmark
+    public long harvest() {
+        final Map<Long, Long> mapped = Arrays.stream(this.numbers)
+            .boxed()
+            .collect(
+                Collectors.groupingBy(
+                    number -> number % 4L,
+                    Collectors.flatMapping(
+                        number -> Stream.of(number, number + 1L),
+                        Collectors.summingLong(Long::longValue)
+                    )
+                )
+            );
+        final LongSummaryStatistics stats = Arrays.stream(this.numbers)
+            .boxed()
+            .collect(Collectors.summarizingLong(Long::longValue));
+        final double average = Arrays.stream(this.numbers)
+            .boxed()
+            .collect(Collectors.averagingLong(number -> number * 2L));
+        final long smallest = Arrays.stream(this.numbers)
+            .boxed()
+            .collect(Collectors.minBy(Comparator.naturalOrder()))
+            .get();
+        final long largest = Arrays.stream(this.numbers)
+            .boxed()
+            .collect(Collectors.maxBy(Comparator.naturalOrder()))
+            .get();
+        final Set<Long> residues = Arrays.stream(this.numbers)
+            .boxed()
+            .map(number -> number % 100L)
+            .collect(Collectors.toUnmodifiableSet());
+        final List<Long> listed = Arrays.stream(this.numbers)
+            .limit(500L)
+            .boxed()
+            .collect(Collectors.toCollection(ArrayList::new));
+        return this.verified(
+            mapped.values().stream().mapToLong(Long::longValue).sum()
+                + stats.getSum()
+                + (long) average
+                + smallest + largest
+                + residues.stream().mapToLong(Long::longValue).sum()
+                + (long) listed.size(),
+            1_500_004_505_452L
+        );
+    }
+
+    @Benchmark
+    public long spread(final Blackhole blackhole) {
+        final double ints = Arrays.stream(this.numbers)
+            .limit(200_000L)
+            .mapToObj(Long::valueOf)
+            .peek(blackhole::consume)
+            .mapMultiToInt((number, sink) -> {
+                sink.accept((int) (number % 100L));
+                sink.accept((int) (number % 7L));
+            })
+            .average()
+            .getAsDouble();
+        final long longs = Arrays.stream(this.numbers)
+            .limit(200_000L)
+            .mapToObj(Long::valueOf)
+            .peek(blackhole::consume)
+            .mapMultiToLong((number, sink) -> {
+                sink.accept(number + 1L);
+                sink.accept(number - 1L);
+            })
+            .sum();
+        final double doubles = Arrays.stream(this.numbers)
+            .limit(200_000L)
+            .mapToObj(Double::valueOf)
+            .peek(blackhole::consume)
+            .mapMultiToDouble((number, sink) -> {
+                sink.accept(number + 0.5);
+                sink.accept(number - 0.5);
+            })
+            .sum();
+        final Long[] array = Arrays.stream(this.numbers)
+            .limit(1_000L)
+            .boxed()
+            .toArray(Long[]::new);
+        return this.verified((long) ints + longs + (long) doubles + (long) array.length, 80_000_401_026L);
+    }
+
+    @Benchmark
+    public long overhead() {
+        return this.verified(
+            Arrays.stream(this.numbers)
+                .limit(8L)
+                .filter(number -> number % 2L == 1L)
+                .map(number -> number * 2L)
+                .sorted()
+                .distinct()
+                .reduce(0L, Long::sum),
+            32L
         );
     }
 

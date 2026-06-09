@@ -69,13 +69,18 @@ The numbers come from [JMH][jmh] 1.37, the Java Microbenchmark Harness,
 Every method is measured in `AverageTime` mode and reported in
   milliseconds per operation (`ms/op`), so each score is the mean wall-clock
   time of a single invocation of one `@Benchmark` method.
-Each benchmark runs in one fork (a freshly started JVM), with three
+Because each pipeline processes a different element count and operation mix,
+  the rows measure distinct workloads: compare JVMs down a single column,
+  not one benchmark against another across rows.
+Each benchmark runs in two forks (each a freshly started JVM), with three
   warmup iterations of one second each to let the JIT compiler settle,
-  followed by five measurement iterations of one second each; the reported
-  score is the arithmetic mean of those five measurement iterations.
-The state is thread-scoped and the harness is single-threaded, so no
-  contention or cross-thread effects enter the timings, and a `Blackhole`
-  consumes intermediate values to stop the JIT from eliminating the pipeline
+  followed by five measurement iterations of two seconds each; the reported
+  score is the arithmetic mean of all ten measurement iterations across the
+  two forks.
+The state is thread-scoped and JMH drives each benchmark from a single
+  measurement thread, though the pipelines that call `parallel()` still fan
+  their work across the shared fork-join pool; a `Blackhole` consumes
+  intermediate boxed values to stop the JIT from eliminating the pipeline
   as dead code.
 JMH writes the raw results to `target/jmh-result.csv`, which the CI
   pipeline parses into the table below.

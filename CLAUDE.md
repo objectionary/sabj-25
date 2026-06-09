@@ -15,18 +15,24 @@ Non-standard Maven dirs: `src/main` and `src/test`.
 
 ## Benchmarks
 
-One class `Main`, sixteen `@Benchmark` methods.
+One class `Main`, twenty-two `@Benchmark` methods.
 Most run a `long` pipeline over 1,000,000 numbers.
 `scalar`: only one-to-one scalar conversions.
 `stateless`: one of every stateless operation.
 `stateful`: operations that must remember state.
 `megamorphic`: many lambdas, megamorphic call sites.
 `fold`: `reduce` and the mutable three-arg `collect`.
+`combine`: those same three-arg combiners run in parallel.
 `generated`: `iterate`, `generate`, and `concat` sources.
 `objects`: a reference stream of `Pair` records.
 `fanout`: `flatMap` that expands one element into many.
 `materialize`: `toArray`, `toList`, `count`, `min`, `max`, `forEach`.
 `concurrent`: parallel stateful ops and concurrent collectors.
+`collection`: a `List` and a `Set` source instead of an array.
+`unordered`: `unordered` and `sequential` toggles in parallel.
+`harvest`: the remaining collectors (`flatMapping`, `minBy`, etc).
+`spread`: the primitive `mapMultiToInt`/`Long`/`Double` variants.
+`overhead`: fixed pipeline cost over only eight elements.
 Every method ends with `verified(sum, expected)`.
 `verified` throws if the sum drifts from its constant.
 Those constants guard against silent pipeline bugs.
@@ -37,7 +43,7 @@ Java 25 required (`maven.compiler.release=25`).
 JMH pinned at 1.37 via an annotation processor.
 Run all: `mvn clean test --errors --batch-mode`.
 The test runs JMH and writes `target/jmh-result.csv`.
-Test timeout is 12 minutes; JMH alone is slow.
+Test timeout is 20 minutes; JMH alone is slow.
 
 ## CI
 

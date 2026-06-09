@@ -6,7 +6,7 @@ name: benchmark
   push:
     branches:
       - master
-    paths-ignore: [ 'README.md', '.github' ]
+    paths-ignore: [ 'README.md', '.github/**' ]
 concurrency:
   group: benchmark-${{ github.ref }}
   cancel-in-progress: true
@@ -16,7 +16,7 @@ permissions:
 jobs:
   benchmark:
     name: 'benchmark (${{ matrix.name }})'
-    timeout-minutes: 15
+    timeout-minutes: 25
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false

@@ -23,12 +23,13 @@ import static org.hamcrest.Matchers.not;
 final class MainTest {
 
     @Test
-    @Timeout(value = 12, unit = TimeUnit.MINUTES)
+    @Timeout(value = 20, unit = TimeUnit.MINUTES)
     void producesBenchmarkResults() throws Exception {
         final Options options = new OptionsBuilder()
             .include(Main.class.getSimpleName())
             .resultFormat(ResultFormatType.CSV)
             .result("target/jmh-result.csv")
+            .shouldFailOnError(true)
             .build();
         final Collection<RunResult> results = new Runner(options).run();
         assertThat(
