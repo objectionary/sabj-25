@@ -40,18 +40,18 @@ public class Main {
         return this.verified(
             Arrays.stream(this.numbers)
                 .filter(number -> number % 2L == 0L)
-                .map(number -> number + 1L)
+                .map(number -> number * 3L - 1L)
                 .asDoubleStream()
-                .mapToObj(Double::valueOf)
+                .mapToObj(value -> Double.valueOf(value + 2.0))
                 .peek(blackhole::consume)
-                .mapToInt(Double::intValue)
+                .mapToInt(value -> (int) (value - 2.0))
                 .asLongStream()
                 .boxed()
                 .peek(blackhole::consume)
-                .mapToDouble(Long::doubleValue)
-                .mapToLong(value -> (long) value)
+                .mapToDouble(value -> value + 0.5)
+                .mapToLong(value -> (long) value + 7L)
                 .sum(),
-            250_001_000_000L
+            750_004_500_000L
         );
     }
 
@@ -60,22 +60,20 @@ public class Main {
         return this.verified(
             Arrays.stream(this.numbers)
                 .filter(number -> number % 2L == 0L)
-                .map(number -> number + 1L)
-                .peek(blackhole::consume)
-                .mapToDouble(number -> (double) number)
-                .map(value -> value * 2.0)
-                .mapToLong(value -> (long) value)
-                .flatMap(LongStream::of)
-                .mapMulti((number, sink) -> sink.accept(number))
-                .boxed()
-                .mapToLong(Long::longValue)
-                .peek(blackhole::consume)
+                .map(number -> number + 5L)
+                .flatMap(number -> LongStream.of(number - 3L))
+                .mapMulti((number, sink) -> sink.accept(number + 2L))
                 .asDoubleStream()
-                .mapToObj(Double::valueOf)
-                .mapToInt(Double::intValue)
+                .mapToObj(value -> Double.valueOf(value * 2.0))
+                .peek(blackhole::consume)
+                .mapToInt(value -> (int) (value / 2.0))
                 .asLongStream()
+                .boxed()
+                .peek(blackhole::consume)
+                .mapToDouble(value -> value - 1.5)
+                .mapToLong(value -> (long) value + 4L)
                 .sum(),
-            500_002_000_000L
+            250_003_500_000L
         );
     }
 
