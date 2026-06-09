@@ -41,29 +41,17 @@ public class Main {
             Arrays.stream(this.numbers)
                 .filter(number -> number % 2L == 0L)
                 .map(number -> number + 1L)
-                .peek(blackhole::consume)
-                .mapToDouble(number -> (double) number)
-                .mapToObj(Double::valueOf)
-                .mapToLong(Double::longValue)
                 .asDoubleStream()
-                .mapToInt(value -> (int) value)
+                .mapToObj(Double::valueOf)
+                .peek(blackhole::consume)
+                .mapToInt(Double::intValue)
                 .asLongStream()
                 .boxed()
-                .mapToLong(Long::longValue)
-                .map(number -> number * 2L)
-                .filter(number -> number > 4L)
                 .peek(blackhole::consume)
-                .mapToDouble(number -> (double) number)
-                .map(value -> value + 0.5)
-                .mapToObj(Double::valueOf)
-                .mapToLong(Double::longValue)
-                .asDoubleStream()
-                .mapToInt(value -> (int) value)
-                .asLongStream()
-                .boxed()
-                .mapToLong(Long::longValue)
+                .mapToDouble(Long::doubleValue)
+                .mapToLong(value -> (long) value)
                 .sum(),
-            500_002_000_000L
+            250_001_000_000L
         );
     }
 
