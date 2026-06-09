@@ -68,16 +68,17 @@ The benchmarks run on every push to `master`, once per JVM, and the
 
 <!-- benchmark_begin -->
 
-| Benchmark | Temurin 25 | Zulu 25 | Corretto 25 | GraalVM 25 | Oracle 25 |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| `megamorphic` | 15.724 | 17.550 | 15.707 | 9.793 | 15.833 |
-| `scalar` | 6.980 | 7.315 | 7.006 | 2.976 | 7.043 |
-| `stateful` | 12.865 | 12.037 | 13.072 | 12.565 | 13.390 |
-| `stateless` | 13.703 | 14.871 | 13.663 | 2.934 | 13.639 |
+| Benchmark | Temurin 25 | Zulu 25 | Corretto 25 | GraalVM 25 | Oracle 25 | Semeru 25 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `longlar` | 14.532 | 14.308 | 11.065 | 6.558 | 16.158 | 14.605 |
+| `megamorphic` | 17.306 | 16.030 | 16.007 | 9.723 | 17.373 | 14.230 |
+| `scalar` | 7.438 | 7.144 | 6.708 | 3.036 | 7.320 | 11.524 |
+| `stateful` | 12.134 | 13.336 | 11.616 | 12.357 | 12.104 | 24.412 |
+| `stateless` | 14.861 | 13.822 | 14.577 | 2.919 | 14.838 | 23.691 |
 
 All scores are in milliseconds per operation (ms/op); lower is better.
 The results were calculated in [this GHA job][benchmark-gha]
-on 2026-06-09 at 14:21.
+on 2026-06-09 at 14:33.
 Each JVM ran on its own GitHub-hosted Linux runner,
 so the scores across columns are indicative, not strictly comparable.
 <!-- benchmark_end -->
@@ -92,5 +93,5 @@ so the scores across columns are indicative, not strictly comparable.
 [mapmulti]: https://github.com/Nikolas-Charalambidis/java-16-mapmulti-benchmark
 [rosales2023]: https://arxiv.org/abs/2302.10006
 [softwaremill]: https://softwaremill.com/benchmarking-java-streams/
-[benchmark-gha]: https://github.com/objectionary/sabj25/actions/runs/27212702833
+[benchmark-gha]: https://github.com/objectionary/sabj25/actions/runs/27213476235
 [Stream API]: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
