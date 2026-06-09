@@ -47,7 +47,7 @@ table=$(
     echo "${header}"
     echo "${divider}"
     while read -r bench; do
-        row="| ${bench} |"
+        row="| \`${bench}\` |"
         for ((i = 0; i < col; i++)); do
             value="${score[${bench}:${i}]:-}"
             if [ -n "${value}" ]; then

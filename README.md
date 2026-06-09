@@ -70,10 +70,10 @@ The benchmarks run on every push to `master`, once per JVM, and the
 
 | Benchmark | Temurin 25 | Zulu 25 | Corretto 25 | GraalVM 25 | Oracle 25 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| megamorphic | 15.724 | 17.550 | 15.707 | 9.793 | 15.833 |
-| scalar | 6.980 | 7.315 | 7.006 | 2.976 | 7.043 |
-| stateful | 12.865 | 12.037 | 13.072 | 12.565 | 13.390 |
-| stateless | 13.703 | 14.871 | 13.663 | 2.934 | 13.639 |
+| `megamorphic` | 15.724 | 17.550 | 15.707 | 9.793 | 15.833 |
+| `scalar` | 6.980 | 7.315 | 7.006 | 2.976 | 7.043 |
+| `stateful` | 12.865 | 12.037 | 13.072 | 12.565 | 13.390 |
+| `stateless` | 13.703 | 14.871 | 13.663 | 2.934 | 13.639 |
 
 All scores are in milliseconds per operation (ms/op); lower is better.
 The results were calculated in [this GHA job][benchmark-gha]

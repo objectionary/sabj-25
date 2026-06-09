@@ -37,6 +37,9 @@ jobs:
           - distribution: oracle
             name: 'Oracle 25'
             order: 5
+          - distribution: semeru
+            name: 'Semeru 25'
+            order: 6
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-java@v5
