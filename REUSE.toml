@@ -5,6 +5,7 @@ version = 1
 [[annotations]]
 path = [
     "README.md",
+    "CLAUDE.md",
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "Copyright (c) 2026 Objectionary.com"
