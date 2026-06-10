@@ -56,8 +56,8 @@ The pipelines are built to measure the Stream API itself, not the
 - **The full API, in combination.** The pipelines span all four stream
   types, `long`, `int`, `double`, and object, and weave terminal and
   intermediate methods together, including `flatMap()` and `mapMulti()`.
-- **One concern per pipeline.** `scalar` isolates one-to-one
-  conversions, `stateless` every stateless operation, `stateful` the
+- **One concern per pipeline.** `stateless` covers every stateless
+  operation including the one-to-one scalar conversions, `stateful` the
   operations that must remember state, and `megamorphic` the megamorphic
   call sites.
 

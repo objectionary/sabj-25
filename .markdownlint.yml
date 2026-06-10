@@ -1,0 +1,5 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+MD013:
+  tables: false
