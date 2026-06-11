@@ -1,6 +1,7 @@
 # Stream API Benchmarks for Java 25
 
 [![benchmark](https://github.com/objectionary/sabj25/actions/workflows/benchmark.yml/badge.svg)](https://github.com/objectionary/sabj25/actions/workflows/benchmark.yml)
+[![mvn](https://github.com/objectionary/sabj25/actions/workflows/mvn.yml/badge.svg)](https://github.com/objectionary/sabj25/actions/workflows/mvn.yml)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/sabj25/blob/master/LICENSE.txt)
 
 This repository contains a set of benchmarks for [Stream API] in Java 25.
